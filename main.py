@@ -9,7 +9,7 @@ pygame.init()
 LABEL_FONT = pygame.font.SysFont("comicsans", 24)
 
 # Width and height of the window
-WIDTH, HEIGHT = 600, 400
+WIDTH, HEIGHT = 1200, 800
 
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Aim Workshop")
@@ -18,7 +18,7 @@ pygame.display.set_caption("Aim Workshop")
 NAV_BAR_HEIGHT = 50
 
 # How often a unique target will appear
-TARGET_INCREMENT = 900
+TARGET_INCREMENT = 500
 
 # Target event
 TARGET_EVENT = pygame.USEREVENT
@@ -40,11 +40,31 @@ def draw(win, targets):
     for target in targets:
         target.draw(win)
 
-    # Draws all of the targets that have rendered up to this point
-    pygame.display.update()
+# Returns a neatly formatted time with minutes, seconds, and milliseconds
+def format_time(secs):
+    milli = math.floor(int(secs * 1000 % 1000 / 100))
+    seconds = int(round(secs % 60, 1))
+    minutes = int(seconds // 60)
 
-def draw_stats(win, elapsed_time, targets_clicked, misses):
+    return f"{minutes:02d}:{seconds:02d}.{milli}"
+
+# Creates the top navigation bar which includes 
+def draw_nav_bar(win, elapsed_time, targets_clicked, misses):
     pygame.draw.rect(win, "grey", (0, 0, WIDTH, NAV_BAR_HEIGHT))
+    time_label = LABEL_FONT.render(f"Time: {format_time(elapsed_time)}", 1, "black")
+    
+    speed = round(targets_clicked / elapsed_time, 1)
+    speed_label = LABEL_FONT.render(f"Speed: {speed} t/s", 1, "black")
+    
+    hits_label = LABEL_FONT.render(f"Hits: {targets_clicked}", 1, "black")
+
+    lives_label = LABEL_FONT.render(f"Lives: {LIVES - misses}", 1, "black")
+
+    win.blit(time_label, (5, 5))
+    win.blit(speed_label, (250, 5))
+    win.blit(hits_label, (550, 5))
+    win.blit(lives_label, (750, 5))
+
     
 
 """
@@ -80,13 +100,13 @@ def main():
             
             if (event.type == TARGET_EVENT):
                 x = random.randint(TARGET_PADDING, WIDTH - TARGET_PADDING)
-                y = random.randint(TARGET_PADDING, HEIGHT - TARGET_PADDING)
+                y = random.randint(TARGET_PADDING + NAV_BAR_HEIGHT, HEIGHT - TARGET_PADDING)
                 target = Target(x, y)
                 targets.append(target)
             
             if (event.type == pygame.MOUSEBUTTONDOWN):
                 click = True
-                ++clicks
+                clicks += 1
 
         # Updates all of the targets prior to drawing
         for target in targets:
@@ -95,13 +115,13 @@ def main():
             # If target is not clicked (size goes to 0), target is removed from list
             if (target.size <= 0):
                 targets.remove(target)
-                ++misses
+                misses += 1
             
             # If the user has clicked their mouse and collided with a target,
             # remove the target and incriment targets clicked
             if click and target.collide(mouse_pos[0], mouse_pos[1]):
                 targets.remove(target)
-                ++targets_clicked 
+                targets_clicked += 1
 
         # Ends game if misses exceeds number of lives
         if misses >= LIVES:
@@ -109,7 +129,8 @@ def main():
         
         # Draws the targets
         draw(WIN, targets)
-        draw_stats(WIN, elapsed_time, targets_clicked, misses)
+        draw_nav_bar(WIN, elapsed_time, targets_clicked, misses)
+        pygame.display.update()
 
     pygame.quit()
 
