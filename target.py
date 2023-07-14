@@ -8,6 +8,7 @@ class Target:
     GROWTH_RATE = 0.2
     COLOR = "red"
     SECOND_COLOR = "white"
+    NUM_CIRCLES = 4
 
     def __init__(self, x, y):
         self.x = x
@@ -27,10 +28,14 @@ class Target:
     Draws a singular target which is represented by 4 circles in reducing size
     """
     def draw(self, win):
-        pygame.draw.circle(win, self.COLOR, (self.x, self.y), self.size)
-        pygame.draw.circle(win, self.SECOND_COLOR, (self.x, self.y), self.size * 0.8)
-        pygame.draw.circle(win, self.COLOR, (self.x, self.y), self.size * 0.6)
-        pygame.draw.circle(win, self.SECOND_COLOR, (self.x, self.y), self.size * 0.4)
+        for i in range(self.NUM_CIRCLES):
+            circle_radius = self.size * (0.8 ** i)
+            if i % 2 == 0:
+                circle_color = self.COLOR
+            else:
+                circle_color = self.SECOND_COLOR
+            
+            pygame.draw.circle(win, circle_color, (self.x, self.y), int(circle_radius))
 
     """
     Checks if where the user clicked is inside the radius of the target
