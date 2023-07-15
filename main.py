@@ -9,6 +9,7 @@ WIDTH, HEIGHT = 1280, 720
 
 # Window/Screen for the game
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Aim Workshop")
 
 # Color of the background
 BG_COLOR = (0, 25, 40)
@@ -27,7 +28,6 @@ LABEL_FONT = pygame.font.SysFont("sans", 24)
 Creates the main menu for the game. 
 """
 def main_menu():
-    pygame.display.set_caption("Menu")
     WIN.fill("black")
     
     MENU_MOUSE_POS = pygame.mouse.get_pos()
@@ -105,7 +105,6 @@ Creates the end screen for the game when the user runs out of lives.
 """
 def end_screen(win, elapsed_time, targets_clicked, clicks):
     while True:
-        pygame.display.set_caption("Game Over!")
         END_SCREEN_MOUSE_POS = pygame.mouse.get_pos()
         win.fill("black")
         
