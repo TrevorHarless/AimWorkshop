@@ -1,5 +1,4 @@
 import math
-from main import BG_COLOR, WIDTH
 
 """
 Function for drawing the targets. 
@@ -21,3 +20,6 @@ def format_time(secs):
 # Easily position text or rectangles in the middle of the screen
 def get_middle(surface):
     return WIDTH / 2 - surface.get_width() / 2  
+
+# Import values from main.py at the end of utils.py to avoid circular import error
+from main import BG_COLOR, WIDTH
