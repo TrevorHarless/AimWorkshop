@@ -22,6 +22,7 @@ MENU_FONT = pygame.font.SysFont("Arial", 32)
 OPTION_FONT = pygame.font.SysFont("Arial", 24)
 LABEL_FONT = pygame.font.SysFont("sans", 24)
 
+
 """
 Creates the main menu for the game. 
 """
@@ -69,44 +70,84 @@ def main_menu():
 Contains the main game loop and logic
 """
 def play():
-    radiating_targets(WIN, HEIGHT, WIDTH)
-    pygame.quit()
+    while True:
+        PLAY_MOUSE_POS = pygame.mouse.get_pos()
 
+        WIN.fill("black")
+
+        PLAY_TEXT = MENU_FONT.render("GAME MODES", True, "White")
+        PLAY_RECT = PLAY_TEXT.get_rect(center=(640, 100))
+        WIN.blit(PLAY_TEXT, PLAY_RECT)
+
+        PLAY_RADIATING_CIRCLES = Button(image=None, pos=(640, 250), 
+                            text_input="RADIATING CIRCLES", font=MENU_FONT, base_color="White", hovering_color="Green")
+        PLAY_BACK = Button(image=None, pos=(640, 550), 
+                            text_input="BACK", font=MENU_FONT, base_color="White", hovering_color="Green")
+        
+        PLAY_RADIATING_CIRCLES.changeColor(PLAY_MOUSE_POS)
+        PLAY_RADIATING_CIRCLES.update(WIN)
+        PLAY_BACK.changeColor(PLAY_MOUSE_POS)
+        PLAY_BACK.update(WIN)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                quit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
+                    main_menu()
+                if PLAY_RADIATING_CIRCLES.checkForInput(PLAY_MOUSE_POS):
+                    radiating_targets(WIN, HEIGHT, WIDTH)
+
+        pygame.display.update()
 
 """
 Creates the end screen for the game when the user runs out of lives. 
 """
 def end_screen(win, elapsed_time, targets_clicked, clicks):
-    pygame.display.set_caption("Game Over!")
-    win.fill(BG_COLOR)
+    while True:
+        pygame.display.set_caption("Game Over!")
+        END_SCREEN_MOUSE_POS = pygame.mouse.get_pos()
+        win.fill("black")
+        
+        END_SCREEN_TEXT = MENU_FONT.render("GAME OVER", True, "White")
+        END_SCREEN_RECT = END_SCREEN_TEXT.get_rect(center=(640, 100))
+        win.blit(END_SCREEN_TEXT, END_SCREEN_RECT)
+        
+        END_SCREEN_BACK = Button(image=None, pos=(640, 600), 
+            text_input="BACK", font=MENU_FONT, base_color="White", hovering_color="Green")
+        
+        END_SCREEN_BACK.changeColor(END_SCREEN_MOUSE_POS)
+        END_SCREEN_BACK.update(WIN)
 
-    time_label = LABEL_FONT.render(f"Time: {format_time(elapsed_time)}", 1, "white")
-    
-    speed = round(targets_clicked / elapsed_time, 1)
-    speed_label = LABEL_FONT.render(f"Speed: {speed} t/s", 1, "white")
-    
-    hits_label = LABEL_FONT.render(f"Hits: {targets_clicked}", 1, "white")
+        time_label = LABEL_FONT.render(f"TIME: {format_time(elapsed_time)}", 1, "white")
+        
+        speed = round(targets_clicked / elapsed_time, 1)
+        speed_label = LABEL_FONT.render(f"SPEED: {speed} t/s", 1, "white")
+        
+        hits_label = LABEL_FONT.render(f"HITS: {targets_clicked}", 1, "white")
 
-    try:
-        accuracy = round(targets_clicked / clicks * 100, 1)
-    except ZeroDivisionError as e:
-        accuracy = 0.0
-    
-    accuracy_label = LABEL_FONT.render(f"Accuracy: {accuracy}", 1, "white")
+        try:
+            accuracy = round(targets_clicked / clicks * 100, 1)
+        except ZeroDivisionError as e:
+            accuracy = 0.0
+        
+        accuracy_label = LABEL_FONT.render(f"ACCURACY: {accuracy}", 1, "white")
 
-    win.blit(time_label, (get_middle(time_label), 50))
-    win.blit(speed_label, (get_middle(speed_label), 150))
-    win.blit(hits_label, (get_middle(hits_label), 250))
-    win.blit(accuracy_label, (get_middle(accuracy_label), 350))
-
-    pygame.display.update()
-
-    run = True
-
-    while run:
+        win.blit(time_label, (get_middle(time_label), 180))
+        win.blit(speed_label, (get_middle(speed_label), 280))
+        win.blit(hits_label, (get_middle(hits_label), 380))
+        win.blit(accuracy_label, (get_middle(accuracy_label), 480))
+        
         for event in pygame.event.get():
-            if event.type == pygame.QUIT or event.type == pygame.KEYDOWN:
+            if event.type == pygame.QUIT:
                 quit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if END_SCREEN_BACK.checkForInput(END_SCREEN_MOUSE_POS):
+                    main_menu()
+                #if PLAY_RADIATING_CIRCLES.checkForInput(PLAY_MOUSE_POS):
+                    #radiating_targets(WIN, HEIGHT, WIDTH)
+
+        pygame.display.update()
 
 if __name__ == "__main__":
     main_menu()

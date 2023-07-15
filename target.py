@@ -6,7 +6,7 @@ Target class for all targets that are drawn onto the screen.
 """
 class Target:
     MAX_SIZE = 30
-    GROWTH_RATE = 0.2
+    GROWTH_RATE = 2
     COLOR = "red"
     SECOND_COLOR = "white"
     NUM_CIRCLES = 4

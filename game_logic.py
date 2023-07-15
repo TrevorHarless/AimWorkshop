@@ -2,7 +2,7 @@ import pygame
 import time
 import random
 from target import Target
-from utils import draw, draw_nav_bar, get_middle, format_time, NAV_BAR_HEIGHT
+from utils import draw, draw_nav_bar, NAV_BAR_HEIGHT
 import main as main
 
 # How often a unique target will appear
