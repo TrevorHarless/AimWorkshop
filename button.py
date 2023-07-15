@@ -4,7 +4,6 @@ updating the button onto the screen, checking for input, and
 changing the color when the user hovers the button. 
 """
 class Button():
-    
     # Initialize properties
     def __init__(self, image, pos, text_input, font, base_color, hovering_color):
         self.image = image

@@ -1,11 +1,7 @@
 import pygame
-import math
-import time
-import random 
-from target import Target
 from button import Button
 from utils import draw, format_time, get_middle
-
+from game_logic import radiating_targets
 pygame.init()
 
 # Width and height of the window
@@ -14,23 +10,8 @@ WIDTH, HEIGHT = 1280, 720
 # Window/Screen for the game
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 
-# Height of the top navigation bar 
-NAV_BAR_HEIGHT = 50
-
-# How often a unique target will appear
-TARGET_INCREMENT = 300
-
-# Target event
-TARGET_EVENT = pygame.USEREVENT
-
-# Padding for the target so that it is always fully on the screen
-TARGET_PADDING = 30
-
 # Color of the background
 BG_COLOR = (0, 25, 40)
-
-# Number of lives
-LIVES = 3
 
 # RGB Values for Colors
 BLACK = (0, 0, 0)
@@ -41,24 +22,9 @@ MENU_FONT = pygame.font.SysFont("Arial", 32)
 OPTION_FONT = pygame.font.SysFont("Arial", 24)
 LABEL_FONT = pygame.font.SysFont("sans", 24)
 
-# Creates the top navigation bar which includes 
-def draw_nav_bar(win, elapsed_time, targets_clicked, misses):
-    pygame.draw.rect(win, "grey", (0, 0, WIDTH, NAV_BAR_HEIGHT))
-    time_label = LABEL_FONT.render(f"Time: {format_time(elapsed_time)}", 1, "black")
-    
-    speed = round(targets_clicked / elapsed_time, 1)
-    speed_label = LABEL_FONT.render(f"Speed: {speed} t/s", 1, "black")
-    
-    hits_label = LABEL_FONT.render(f"Hits: {targets_clicked}", 1, "black")
-
-    lives_label = LABEL_FONT.render(f"Lives: {LIVES - misses}", 1, "black")
-
-    win.blit(time_label, (5, 5))
-    win.blit(speed_label, (250, 5))
-    win.blit(hits_label, (550, 5))
-    win.blit(lives_label, (750, 5))
-
-
+"""
+Creates the main menu for the game. 
+"""
 def main_menu():
     pygame.display.set_caption("Menu")
     WIN.fill("black")
@@ -99,7 +65,17 @@ def main_menu():
     
         pygame.display.update()
 
+"""
+Contains the main game loop and logic
+"""
+def play():
+    radiating_targets(WIN, HEIGHT, WIDTH)
+    pygame.quit()
 
+
+"""
+Creates the end screen for the game when the user runs out of lives. 
+"""
 def end_screen(win, elapsed_time, targets_clicked, clicks):
     pygame.display.set_caption("Game Over!")
     win.fill(BG_COLOR)
@@ -131,72 +107,6 @@ def end_screen(win, elapsed_time, targets_clicked, clicks):
         for event in pygame.event.get():
             if event.type == pygame.QUIT or event.type == pygame.KEYDOWN:
                 quit()
-
-"""
-Contains the main game loop and logic
-"""
-def play():
-    run = True
-
-    targets = []
-
-    clock = pygame.time.Clock()
-
-    pygame.time.set_timer(TARGET_EVENT, TARGET_INCREMENT)
-
-    targets_clicked = 0
-    clicks = 0
-    misses = 0
-    start_time = time.time()
-
-    # Game loop
-    while run:
-        # Sets framerate to 60 // How fast the while loop will run
-        clock.tick(60)
-        click = False
-        mouse_pos = pygame.mouse.get_pos()
-        elapsed_time = time.time() - start_time
-
-        for event in pygame.event.get():
-            if (event.type == pygame.QUIT):
-                run = False
-                break
-            
-            if (event.type == TARGET_EVENT):
-                x = random.randint(TARGET_PADDING, WIDTH - TARGET_PADDING)
-                y = random.randint(TARGET_PADDING + NAV_BAR_HEIGHT, HEIGHT - TARGET_PADDING)
-                target = Target(x, y)
-                targets.append(target)
-            
-            if (event.type == pygame.MOUSEBUTTONDOWN):
-                click = True
-                clicks += 1
-
-        # Updates all of the targets prior to drawing
-        for target in targets:
-            target.update()
-
-            # If target is not clicked (size goes to 0), target is removed from list
-            if (target.size <= 0):
-                targets.remove(target)
-                misses += 1
-            
-            # If the user has clicked their mouse and collided with a target,
-            # remove the target and incriment targets clicked
-            if click and target.collide(mouse_pos[0], mouse_pos[1]):
-                targets.remove(target)
-                targets_clicked += 1
-
-        # Ends game if misses exceeds number of lives
-        if misses >= LIVES:
-            end_screen(WIN, elapsed_time, targets_clicked, clicks)
-        
-        # Draws the targets
-        draw(WIN, targets)
-        draw_nav_bar(WIN, elapsed_time, targets_clicked, misses)
-        pygame.display.update()
-
-    pygame.quit()
 
 if __name__ == "__main__":
     main_menu()
