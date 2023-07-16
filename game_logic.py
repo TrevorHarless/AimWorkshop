@@ -74,5 +74,5 @@ def radiating_targets(WIN, HEIGHT, WIDTH, options):
 
         # Draws the targets
         draw(WIN, targets, options)
-        draw_nav_bar(WIN, elapsed_time, targets_clicked, misses)
+        draw_nav_bar(WIN, elapsed_time, targets_clicked, misses, WIDTH, LIVES)
         pygame.display.update()

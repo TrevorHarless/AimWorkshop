@@ -24,12 +24,12 @@ def format_time(secs):
     return f"{minutes:02d}:{seconds:02d}.{milli}"
 
 # Easily position text or rectangles in the middle of the screen
-def get_middle(surface):
-    return WIDTH / 2 - surface.get_width() / 2  
+def get_middle(surface, width):
+    return width / 2 - surface.get_width() / 2  
 
 # Creates the top navigation bar which includes 
-def draw_nav_bar(win, elapsed_time, targets_clicked, misses):
-    pygame.draw.rect(win, "grey", (0, 0, WIDTH, NAV_BAR_HEIGHT))
+def draw_nav_bar(win, elapsed_time, targets_clicked, misses, width, lives):
+    pygame.draw.rect(win, "grey", (0, 0, width, NAV_BAR_HEIGHT))
     time_label = LABEL_FONT.render(f"Time: {format_time(elapsed_time)}", 1, "black")
     
     speed = round(targets_clicked / elapsed_time, 1)
@@ -37,7 +37,7 @@ def draw_nav_bar(win, elapsed_time, targets_clicked, misses):
     
     hits_label = LABEL_FONT.render(f"Hits: {targets_clicked}", 1, "black")
 
-    lives_label = LABEL_FONT.render(f"Lives: {LIVES - misses}", 1, "black")
+    lives_label = LABEL_FONT.render(f"Lives: {lives - misses}", 1, "black")
 
     win.blit(time_label, (5, 5))
     win.blit(speed_label, (250, 5))
@@ -45,5 +45,4 @@ def draw_nav_bar(win, elapsed_time, targets_clicked, misses):
     win.blit(lives_label, (750, 5))
 
 # Import values from main.py at the end of utils.py to avoid circular import error
-from main import WIDTH, LABEL_FONT
-from game_logic import LIVES
+from main import LABEL_FONT
