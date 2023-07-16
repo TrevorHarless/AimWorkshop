@@ -7,14 +7,14 @@ Target class for all targets that are drawn onto the screen.
 class Target:
     MAX_SIZE = 30
     GROWTH_RATE = 2
-    COLOR = "red"
-    SECOND_COLOR = "white"
+    #COLOR = "red"
+    #SECOND_COLOR = "white"
     NUM_CIRCLES = 4
 
-    def __init__(self, x, y):
+    def __init__(self, x, y, size):
         self.x = x
         self.y = y
-        self.size = 0
+        self.size = size
         self.grow = True
 
     def update(self):
@@ -28,13 +28,13 @@ class Target:
     """
     Draws a singular target which is represented by 4 circles in reducing size
     """
-    def draw(self, win):
+    def draw(self, win, options):
         for i in range(self.NUM_CIRCLES):
             circle_radius = self.size * (0.8 ** i)
             if i % 2 == 0:
-                circle_color = self.COLOR
+                circle_color = options.get_first_target_color()
             else:
-                circle_color = self.SECOND_COLOR
+                circle_color = options.get_second_target_color()
             
             pygame.draw.circle(win, circle_color, (self.x, self.y), int(circle_radius))
 

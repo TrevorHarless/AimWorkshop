@@ -7,11 +7,13 @@ NAV_BAR_HEIGHT = 50
 """
 Function for drawing the targets. 
 """
-def draw(win, targets):
-    win.fill(BG_COLOR)
-
+def draw(win, targets, options):
+    win.fill("black")
     for target in targets:
-        target.draw(win)
+        target.draw(win, options)
+
+def mock_draw(win, target, options):
+    target.draw(win, options)
 
 # Returns a neatly formatted time with minutes, seconds, and milliseconds
 def format_time(secs):
@@ -43,5 +45,5 @@ def draw_nav_bar(win, elapsed_time, targets_clicked, misses):
     win.blit(lives_label, (750, 5))
 
 # Import values from main.py at the end of utils.py to avoid circular import error
-from main import BG_COLOR, WIDTH, LABEL_FONT
+from main import WIDTH, LABEL_FONT
 from game_logic import LIVES
