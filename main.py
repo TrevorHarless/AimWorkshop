@@ -1,6 +1,6 @@
 import pygame
 from button import Button
-from utils import mock_draw, format_time, get_middle
+from utils import mock_draw, format_time, get_middle, get_font
 from game_logic import radiating_targets
 from options import UserOptions
 from target import Target
@@ -33,17 +33,14 @@ Creates the main menu for the game.
 """
 def main_menu(options):
     PLAY_BUTTON = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(640, 250),
-                         text_input="PLAY", font=MENU_FONT, base_color="white", hovering_color="#d7fcd4")
-    OPTIONS_BUTTON = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(640, 400),
-                         text_input="OPTIONS", font=MENU_FONT, base_color="white", hovering_color="#d7fcd4")
-    QUIT_BUTTON =Button(image=pygame.image.load("assets/Play Rect.png"), pos=(640, 550),
-                         text_input="QUIT", font=MENU_FONT, base_color="white", hovering_color="#d7fcd4")
+                         text_input="PLAY", font=get_font(75), base_color="#d5bdae", hovering_color="#2c5299")
+    OPTIONS_BUTTON = Button(image=pygame.image.load("assets/Options Rect.png"), pos=(640, 400),
+                         text_input="OPTIONS", font=get_font(75), base_color="#d5bdae", hovering_color="#2c5299")
+    QUIT_BUTTON =Button(image=pygame.image.load("assets/Quit Rect.png"), pos=(640, 550),
+                         text_input="QUIT", font=get_font(75), base_color="#d5bdae", hovering_color="#2c5299")
 
-    bg_img = pygame.image.load("assets/Gradient Background.jpg")
-    bg_img = pygame.transform.scale(bg_img,(WIDTH,HEIGHT))   
-
+    WIN.fill(options.get_bg_color())
     while True:
-        WIN.blit(bg_img, (0, 0))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 quit()
@@ -56,7 +53,7 @@ def main_menu(options):
                     quit()
         
         MENU_MOUSE_POS = pygame.mouse.get_pos()
-        MENU_TEXT = MENU_FONT.render("MAIN MENU", 1, "white")
+        MENU_TEXT = get_font(75).render("MAIN MENU", 1, "#d5bdae")
         MENU_RECT = MENU_TEXT.get_rect(center=(640, 100))
         WIN.blit(MENU_TEXT, MENU_RECT)
 
@@ -73,7 +70,7 @@ def play(options):
     while True:
         PLAY_MOUSE_POS = pygame.mouse.get_pos()
 
-        WIN.fill("black")
+        WIN.fill(options.get_bg_color())
 
         PLAY_TEXT = MENU_FONT.render("GAME MODES", True, "White")
         PLAY_RECT = PLAY_TEXT.get_rect(center=(640, 100))
@@ -106,7 +103,8 @@ Creates the end screen for the game when the user runs out of lives.
 def end_screen(elapsed_time, targets_clicked, clicks, options):
     while True:
         END_SCREEN_MOUSE_POS = pygame.mouse.get_pos()
-        WIN.fill("black")
+        
+        WIN.fill(options.get_bg_color())
         
         END_SCREEN_TEXT = MENU_FONT.render("GAME OVER", True, "White")
         END_SCREEN_RECT = END_SCREEN_TEXT.get_rect(center=(640, 100))
@@ -114,7 +112,6 @@ def end_screen(elapsed_time, targets_clicked, clicks, options):
         
         END_SCREEN_BACK = Button(image=None, pos=(640, 600), 
             text_input="BACK", font=MENU_FONT, base_color="White", hovering_color="Green")
-        
         END_SCREEN_BACK.changeColor(END_SCREEN_MOUSE_POS)
         END_SCREEN_BACK.update(WIN)
 
@@ -148,9 +145,9 @@ def end_screen(elapsed_time, targets_clicked, clicks, options):
 
 def options_screen(options):
     while True:
-        OPTIONS_SCREEN_MOUSE_POS = pygame.mouse.get_pos()
-        WIN.fill("black")
+        WIN.fill(options.get_bg_color())
         
+        OPTIONS_SCREEN_MOUSE_POS = pygame.mouse.get_pos()
         OPTIONS_SCREEN_TEXT = MENU_FONT.render("OPTIONS", True, "White")
         OPTIONS_SCREEN_RECT = OPTIONS_SCREEN_TEXT.get_rect(center=(640, 100))
         WIN.blit(OPTIONS_SCREEN_TEXT, OPTIONS_SCREEN_RECT)
@@ -162,6 +159,8 @@ def options_screen(options):
             text_input="FIRST TARGET COLOR", font=MENU_FONT, base_color="White", hovering_color="Green")
         SECOND_TARGET_COLOR_BUTTON = Button(image=None, pos=(640, 280), 
             text_input="SECOND TARGET COLOR", font=MENU_FONT, base_color="White", hovering_color="Green")
+        BACKGROUND_BUTTON = Button(image=None, pos=(640, 380), 
+            text_input="BACKGROUND", font=MENU_FONT, base_color="White", hovering_color="Green")
 
         OPTIONS_SCREEN_BACK = Button(image=None, pos=(640, 600), 
             text_input="BACK", font=MENU_FONT, base_color="White", hovering_color="Green")
@@ -172,6 +171,8 @@ def options_screen(options):
         FIRST_TARGET_COLOR_BUTTON.update(WIN)
         SECOND_TARGET_COLOR_BUTTON.changeColor(OPTIONS_SCREEN_MOUSE_POS)
         SECOND_TARGET_COLOR_BUTTON.update(WIN)
+        BACKGROUND_BUTTON.changeColor(OPTIONS_SCREEN_MOUSE_POS)
+        BACKGROUND_BUTTON.update(WIN)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -183,6 +184,8 @@ def options_screen(options):
                     options.cycle_first_target_color()
                 if SECOND_TARGET_COLOR_BUTTON.checkForInput(OPTIONS_SCREEN_MOUSE_POS):
                     options.cycle_second_target_color()
+                if BACKGROUND_BUTTON.checkForInput(OPTIONS_SCREEN_MOUSE_POS):
+                    options.cycle_bg_image()
         pygame.display.update()
 
 

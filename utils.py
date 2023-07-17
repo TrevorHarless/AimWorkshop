@@ -8,7 +8,7 @@ NAV_BAR_HEIGHT = 50
 Function for drawing the targets. 
 """
 def draw(win, targets, options):
-    win.fill("black")
+    win.fill(options.get_bg_color())
     for target in targets:
         target.draw(win, options)
 
@@ -43,6 +43,11 @@ def draw_nav_bar(win, elapsed_time, targets_clicked, misses, width, lives):
     win.blit(speed_label, (250, 5))
     win.blit(hits_label, (550, 5))
     win.blit(lives_label, (750, 5))
+
+
+def get_font(size): 
+    return pygame.font.Font("assets/Swansea.ttf", size)
+
 
 # Import values from main.py at the end of utils.py to avoid circular import error
 from main import LABEL_FONT

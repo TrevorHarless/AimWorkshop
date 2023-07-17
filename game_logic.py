@@ -19,17 +19,14 @@ LIVES = 3
 
 def radiating_targets(WIN, HEIGHT, WIDTH, options):
     run = True
-
     targets = []
-
     clock = pygame.time.Clock()
-
     pygame.time.set_timer(TARGET_EVENT, TARGET_INCREMENT)
-
     targets_clicked = 0
     clicks = 0
     misses = 0
     start_time = time.time()
+
     # Game loop
     while run:
         # Sets framerate to 60 // How fast the while loop will run
@@ -46,7 +43,6 @@ def radiating_targets(WIN, HEIGHT, WIDTH, options):
                 x = random.randint(TARGET_PADDING, WIDTH - TARGET_PADDING)
                 y = random.randint(TARGET_PADDING + NAV_BAR_HEIGHT, HEIGHT - TARGET_PADDING)
                 target = Target(x, y, 0)
-                # TODO: May need to change color here
                 targets.append(target)
             
             if (event.type == pygame.MOUSEBUTTONDOWN):
