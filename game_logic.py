@@ -17,7 +17,7 @@ TARGET_PADDING = 30
 # Number of lives
 LIVES = 3
 
-def radiating_targets(WIN, HEIGHT, WIDTH, options):
+def radiating_targets(WIN, HEIGHT, WIDTH, options, slider):
     run = True
     targets = []
     clock = pygame.time.Clock()
@@ -42,7 +42,7 @@ def radiating_targets(WIN, HEIGHT, WIDTH, options):
             if (event.type == TARGET_EVENT):
                 x = random.randint(TARGET_PADDING, WIDTH - TARGET_PADDING)
                 y = random.randint(TARGET_PADDING + NAV_BAR_HEIGHT, HEIGHT - TARGET_PADDING)
-                target = Target(x, y, 0)
+                target = Target(x, y, 0, slider.get_value())
                 targets.append(target)
             
             if (event.type == pygame.MOUSEBUTTONDOWN):

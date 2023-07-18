@@ -4,6 +4,7 @@ from utils import mock_draw, format_time, get_middle, get_font
 from game_logic import radiating_targets
 from options import UserOptions
 from target import Target
+from slider import Slider
 pygame.init()
 
 # Width and height of the window
@@ -27,6 +28,9 @@ LABEL_FONT = pygame.font.SysFont("sans", 24)
 
 options = UserOptions()
 
+sliders = [
+            Slider((200, 300), (100, 30), .5, 0, 1.2)
+        ]
 
 """
 Creates the main menu for the game. 
@@ -48,7 +52,7 @@ def main_menu(options):
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
                     play(options)
                 if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
-                    options_screen(options)
+                    options_screen(options, sliders)
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
                     quit()
         
@@ -93,7 +97,7 @@ def play(options):
                 if PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
                     main_menu(options)
                 if PLAY_RADIATING_CIRCLES.checkForInput(PLAY_MOUSE_POS):
-                    radiating_targets(WIN, HEIGHT, WIDTH, options)
+                    radiating_targets(WIN, HEIGHT, WIDTH, options, sliders[0])
 
         pygame.display.update()
 
@@ -143,7 +147,7 @@ def end_screen(elapsed_time, targets_clicked, clicks, options):
 
         pygame.display.update()
 
-def options_screen(options):
+def options_screen(options, sliders):
     while True:
         WIN.fill(options.get_bg_color())
         
@@ -152,7 +156,7 @@ def options_screen(options):
         OPTIONS_SCREEN_RECT = OPTIONS_SCREEN_TEXT.get_rect(center=(640, 100))
         WIN.blit(OPTIONS_SCREEN_TEXT, OPTIONS_SCREEN_RECT)
 
-        mock_target = Target(1000, 235, 30)  
+        mock_target = Target(1000, 235, 30, 0)  
         mock_draw(WIN, mock_target, options)
 
         FIRST_TARGET_COLOR_BUTTON = Button(image=None, pos=(640, 180), 
@@ -173,6 +177,12 @@ def options_screen(options):
         SECOND_TARGET_COLOR_BUTTON.update(WIN)
         BACKGROUND_BUTTON.changeColor(OPTIONS_SCREEN_MOUSE_POS)
         BACKGROUND_BUTTON.update(WIN)
+        
+        for slider in sliders:
+            if slider.container_rect.collidepoint(OPTIONS_SCREEN_MOUSE_POS) and pygame.mouse.get_pressed()[0]:
+                slider.move_slider(OPTIONS_SCREEN_MOUSE_POS)
+            print(slider.get_value())
+            slider.render(WIN)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

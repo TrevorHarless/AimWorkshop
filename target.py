@@ -6,24 +6,24 @@ Target class for all targets that are drawn onto the screen.
 """
 class Target:
     MAX_SIZE = 30
-    GROWTH_RATE = 2
     #COLOR = "red"
     #SECOND_COLOR = "white"
     NUM_CIRCLES = 4
 
-    def __init__(self, x, y, size):
+    def __init__(self, x, y, size, growth_rate):
         self.x = x
         self.y = y
         self.size = size
         self.grow = True
+        self.growth_rate = growth_rate
 
     def update(self):
-        if (self.size + self.GROWTH_RATE >= self.MAX_SIZE):
+        if (self.size + self.growth_rate >= self.MAX_SIZE):
             self.grow = False
         if (self.grow):
-            self.size += self.GROWTH_RATE
+            self.size += self.growth_rate
         else:
-            self.size -= self.GROWTH_RATE
+            self.size -= self.growth_rate
 
     """
     Draws a singular target which is represented by 4 circles in reducing size
