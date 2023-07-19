@@ -6,7 +6,7 @@ from utils import draw, draw_nav_bar, NAV_BAR_HEIGHT
 import main as main
 
 # How often a unique target will appear
-TARGET_INCREMENT = 300
+TARGET_INCREMENT = 800
 
 # Target event
 TARGET_EVENT = pygame.USEREVENT
@@ -17,7 +17,7 @@ TARGET_PADDING = 30
 # Number of lives
 LIVES = 3
 
-def radiating_targets(WIN, HEIGHT, WIDTH, options, slider):
+def radiating_targets(WIN, HEIGHT, WIDTH, options):
     run = True
     targets = []
     clock = pygame.time.Clock()
@@ -42,7 +42,7 @@ def radiating_targets(WIN, HEIGHT, WIDTH, options, slider):
             if (event.type == TARGET_EVENT):
                 x = random.randint(TARGET_PADDING, WIDTH - TARGET_PADDING)
                 y = random.randint(TARGET_PADDING + NAV_BAR_HEIGHT, HEIGHT - TARGET_PADDING)
-                target = Target(x, y, 0, slider.get_value())
+                target = Target(x, y, 0, options.get_growth_rate())
                 targets.append(target)
             
             if (event.type == pygame.MOUSEBUTTONDOWN):

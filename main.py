@@ -29,7 +29,7 @@ LABEL_FONT = pygame.font.SysFont("sans", 24)
 options = UserOptions()
 
 sliders = [
-            Slider((200, 300), (100, 30), .5, 0, 1.2)
+            Slider((WIDTH / 2, 395), (100, 30), .5, 0, 1.2)
         ]
 
 """
@@ -97,7 +97,7 @@ def play(options):
                 if PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
                     main_menu(options)
                 if PLAY_RADIATING_CIRCLES.checkForInput(PLAY_MOUSE_POS):
-                    radiating_targets(WIN, HEIGHT, WIDTH, options, sliders[0])
+                    radiating_targets(WIN, HEIGHT, WIDTH, options)
 
         pygame.display.update()
 
@@ -153,20 +153,19 @@ def options_screen(options, sliders):
         
         OPTIONS_SCREEN_MOUSE_POS = pygame.mouse.get_pos()
         OPTIONS_SCREEN_TEXT = MENU_FONT.render("OPTIONS", True, "White")
-        OPTIONS_SCREEN_RECT = OPTIONS_SCREEN_TEXT.get_rect(center=(640, 100))
+        OPTIONS_SCREEN_RECT = OPTIONS_SCREEN_TEXT.get_rect(center=(WIDTH / 2, 70))
         WIN.blit(OPTIONS_SCREEN_TEXT, OPTIONS_SCREEN_RECT)
 
-        mock_target = Target(1000, 235, 30, 0)  
+        mock_target = Target(900, 160, 30, 0)  
         mock_draw(WIN, mock_target, options)
 
-        FIRST_TARGET_COLOR_BUTTON = Button(image=None, pos=(640, 180), 
+        FIRST_TARGET_COLOR_BUTTON = Button(image=None, pos=(WIDTH / 2, 130), 
             text_input="FIRST TARGET COLOR", font=MENU_FONT, base_color="White", hovering_color="Green")
-        SECOND_TARGET_COLOR_BUTTON = Button(image=None, pos=(640, 280), 
+        SECOND_TARGET_COLOR_BUTTON = Button(image=None, pos=(WIDTH / 2, 190), 
             text_input="SECOND TARGET COLOR", font=MENU_FONT, base_color="White", hovering_color="Green")
-        BACKGROUND_BUTTON = Button(image=None, pos=(640, 380), 
+        BACKGROUND_BUTTON = Button(image=None, pos=(WIDTH / 2, 265), 
             text_input="BACKGROUND", font=MENU_FONT, base_color="White", hovering_color="Green")
-
-        OPTIONS_SCREEN_BACK = Button(image=None, pos=(640, 600), 
+        OPTIONS_SCREEN_BACK = Button(image=None, pos=(WIDTH / 2, 630), 
             text_input="BACK", font=MENU_FONT, base_color="White", hovering_color="Green")
         
         OPTIONS_SCREEN_BACK.changeColor(OPTIONS_SCREEN_MOUSE_POS)
@@ -178,10 +177,14 @@ def options_screen(options, sliders):
         BACKGROUND_BUTTON.changeColor(OPTIONS_SCREEN_MOUSE_POS)
         BACKGROUND_BUTTON.update(WIN)
         
+
+        SLIDER_TEXT = MENU_FONT.render("GROWTH RATE", True, "White")
+        SLIDER_TEXT_RECT = SLIDER_TEXT.get_rect(center=(WIDTH / 2, 340))
+        WIN.blit(SLIDER_TEXT, SLIDER_TEXT_RECT)
         for slider in sliders:
             if slider.container_rect.collidepoint(OPTIONS_SCREEN_MOUSE_POS) and pygame.mouse.get_pressed()[0]:
                 slider.move_slider(OPTIONS_SCREEN_MOUSE_POS)
-            print(slider.get_value())
+                options.set_growth_rate(slider.get_value())
             slider.render(WIN)
 
         for event in pygame.event.get():
