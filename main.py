@@ -1,6 +1,6 @@
 import pygame
 from button import Button
-from utils import mock_draw, format_time, get_middle, get_font
+from utils import mock_draw, format_time, get_middle, get_font, center_vertically, center_x
 from game_logic import radiating_targets
 from options import UserOptions
 from target import Target
@@ -25,23 +25,37 @@ WHITE = (255, 255, 255)
 MENU_FONT = pygame.font.SysFont("Arial", 32)
 OPTION_FONT = pygame.font.SysFont("Arial", 24)
 LABEL_FONT = pygame.font.SysFont("sans", 24)
+PRIMARY_COLOR = "#6200EE"
+PRIMARY_VAR = "#3700B3"
+SECONDARY_COLOR = "#03DAC6"
+SECONDARY_VAR = "#018786"
+ON_PRIMARY = "#FFFFFF"
+ON_SECONDARY = "#000000"
 
 options = UserOptions()
 
 sliders = [
-            Slider((WIDTH / 2, 395), (100, 30), .5, 0, 1.2)
+    Slider((WIDTH / 2, 440), (100, 30), .5, 0.1, 1.2)
         ]
 
 """
 Creates the main menu for the game. 
 """
 def main_menu(options):
-    PLAY_BUTTON = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(640, 250),
-                         text_input="PLAY", font=get_font(75), base_color="#d5bdae", hovering_color="#2c5299")
-    OPTIONS_BUTTON = Button(image=pygame.image.load("assets/Options Rect.png"), pos=(640, 400),
-                         text_input="OPTIONS", font=get_font(75), base_color="#d5bdae", hovering_color="#2c5299")
-    QUIT_BUTTON =Button(image=pygame.image.load("assets/Quit Rect.png"), pos=(640, 550),
-                         text_input="QUIT", font=get_font(75), base_color="#d5bdae", hovering_color="#2c5299")
+    PLAY_BUTTON = Button(pos=(0, 0),
+                         text_input="PLAY", font=get_font(75), base_color=ON_PRIMARY, hovering_color=ON_SECONDARY)
+    OPTIONS_BUTTON = Button(pos=(0, 0),
+                         text_input="OPTIONS", font=get_font(75), base_color=ON_PRIMARY, hovering_color=ON_SECONDARY)
+    QUIT_BUTTON =Button(pos=(0, 0),
+                         text_input="QUIT", font=get_font(75), base_color=ON_PRIMARY, hovering_color=ON_SECONDARY)
+
+
+    
+    buttons = [PLAY_BUTTON, OPTIONS_BUTTON, QUIT_BUTTON]
+    # Spacing between buttons on screen
+    spacing = 35 
+
+    center_vertically(buttons, spacing, 0, WIDTH, HEIGHT)
 
     WIN.fill(options.get_bg_color())
     while True:
@@ -57,9 +71,8 @@ def main_menu(options):
                     quit()
         
         MENU_MOUSE_POS = pygame.mouse.get_pos()
-        MENU_TEXT = get_font(75).render("MAIN MENU", 1, "#d5bdae")
-        MENU_RECT = MENU_TEXT.get_rect(center=(640, 100))
-        WIN.blit(MENU_TEXT, MENU_RECT)
+        MENU_TEXT = get_font(75).render("AIM WORKSHOP", 1, ON_PRIMARY)
+        WIN.blit(MENU_TEXT, (get_middle(MENU_TEXT, WIDTH), 45))
 
         for button in [PLAY_BUTTON, OPTIONS_BUTTON, QUIT_BUTTON]:
             button.changeColor(MENU_MOUSE_POS)
@@ -76,19 +89,36 @@ def play(options):
 
         WIN.fill(options.get_bg_color())
 
-        PLAY_TEXT = MENU_FONT.render("GAME MODES", True, "White")
-        PLAY_RECT = PLAY_TEXT.get_rect(center=(640, 100))
+        PLAY_TEXT = get_font(75).render("GAME MODES", True, "White")
+        PLAY_RECT = PLAY_TEXT.get_rect(center=(WIDTH / 2, 70))
         WIN.blit(PLAY_TEXT, PLAY_RECT)
 
-        PLAY_RADIATING_CIRCLES = Button(image=None, pos=(640, 250), 
-                            text_input="RADIATING CIRCLES", font=MENU_FONT, base_color="White", hovering_color="Green")
-        PLAY_BACK = Button(image=None, pos=(640, 550), 
-                            text_input="BACK", font=MENU_FONT, base_color="White", hovering_color="Green")
+        PLAY_RADIATING_CIRCLES = Button(pos=(0, 0), 
+                            text_input="RADIATING CIRCLES", font=get_font(35), base_color="White", hovering_color="Green")
+        PLAY_GRAVITY = Button(pos=(0, 0), 
+                            text_input="GRAVITY", font=get_font(35), base_color="White", hovering_color="Green")
+        PLAY_NO_GRAVITY = Button(pos=(0, 0), 
+                            text_input="NO GRAVITY", font=get_font(35), base_color="White", hovering_color="Green")
+        PLAY_BACK = Button(pos=(0, 0), 
+                            text_input="BACK", font=get_font(35), base_color="White", hovering_color="Green")
+        
+        buttons = [
+            PLAY_RADIATING_CIRCLES, PLAY_GRAVITY, PLAY_NO_GRAVITY, PLAY_BACK
+        ]
+
+        # Spacing between buttons on screen
+        spacing = 35
+
+        center_vertically(buttons, spacing, 0, WIDTH, HEIGHT)
         
         PLAY_RADIATING_CIRCLES.changeColor(PLAY_MOUSE_POS)
         PLAY_RADIATING_CIRCLES.update(WIN)
         PLAY_BACK.changeColor(PLAY_MOUSE_POS)
         PLAY_BACK.update(WIN)
+        PLAY_NO_GRAVITY.changeColor(PLAY_MOUSE_POS)
+        PLAY_NO_GRAVITY.update(WIN)
+        PLAY_GRAVITY.changeColor(PLAY_MOUSE_POS)
+        PLAY_GRAVITY.update(WIN)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -98,6 +128,10 @@ def play(options):
                     main_menu(options)
                 if PLAY_RADIATING_CIRCLES.checkForInput(PLAY_MOUSE_POS):
                     radiating_targets(WIN, HEIGHT, WIDTH, options)
+                if PLAY_NO_GRAVITY.checkForInput(PLAY_MOUSE_POS):
+                    pass
+                if PLAY_GRAVITY.checkForInput(PLAY_MOUSE_POS):
+                    pass
 
         pygame.display.update()
 
@@ -114,8 +148,12 @@ def end_screen(elapsed_time, targets_clicked, clicks, options):
         END_SCREEN_RECT = END_SCREEN_TEXT.get_rect(center=(640, 100))
         WIN.blit(END_SCREEN_TEXT, END_SCREEN_RECT)
         
-        END_SCREEN_BACK = Button(image=None, pos=(640, 600), 
+        END_SCREEN_BACK = Button(pos=(0, 0), 
             text_input="BACK", font=MENU_FONT, base_color="White", hovering_color="Green")
+
+        center_x(END_SCREEN_BACK, WIDTH)
+        END_SCREEN_BACK.rect.y = HEIGHT * 0.85
+        
         END_SCREEN_BACK.changeColor(END_SCREEN_MOUSE_POS)
         END_SCREEN_BACK.update(WIN)
 
@@ -159,15 +197,31 @@ def options_screen(options, sliders):
         mock_target = Target(900, 160, 30, 0)  
         mock_draw(WIN, mock_target, options)
 
-        FIRST_TARGET_COLOR_BUTTON = Button(image=None, pos=(WIDTH / 2, 130), 
+        FIRST_TARGET_COLOR_BUTTON = Button(pos=(0, 0), 
             text_input="FIRST TARGET COLOR", font=MENU_FONT, base_color="White", hovering_color="Green")
-        SECOND_TARGET_COLOR_BUTTON = Button(image=None, pos=(WIDTH / 2, 190), 
+        SECOND_TARGET_COLOR_BUTTON = Button(pos=(0, 0), 
             text_input="SECOND TARGET COLOR", font=MENU_FONT, base_color="White", hovering_color="Green")
-        BACKGROUND_BUTTON = Button(image=None, pos=(WIDTH / 2, 265), 
+        BACKGROUND_BUTTON = Button(pos=(0, 0), 
             text_input="BACKGROUND", font=MENU_FONT, base_color="White", hovering_color="Green")
-        OPTIONS_SCREEN_BACK = Button(image=None, pos=(WIDTH / 2, 630), 
-            text_input="BACK", font=MENU_FONT, base_color="White", hovering_color="Green")
         
+        buttons = [
+            FIRST_TARGET_COLOR_BUTTON, SECOND_TARGET_COLOR_BUTTON, 
+            BACKGROUND_BUTTON
+        ]
+
+        # Spacing between buttons on screen
+        spacing = 25
+
+        center_vertically(buttons, spacing, -150, WIDTH, HEIGHT)
+
+        OPTIONS_SCREEN_BACK = Button(pos=(0, 0), 
+            text_input="BACK", font=MENU_FONT, base_color="White", hovering_color="Green")
+
+
+        center_x(OPTIONS_SCREEN_BACK, WIDTH)
+        OPTIONS_SCREEN_BACK.rect.y = HEIGHT * 0.85
+        
+
         OPTIONS_SCREEN_BACK.changeColor(OPTIONS_SCREEN_MOUSE_POS)
         OPTIONS_SCREEN_BACK.update(WIN)
         FIRST_TARGET_COLOR_BUTTON.changeColor(OPTIONS_SCREEN_MOUSE_POS)
@@ -177,10 +231,13 @@ def options_screen(options, sliders):
         BACKGROUND_BUTTON.changeColor(OPTIONS_SCREEN_MOUSE_POS)
         BACKGROUND_BUTTON.update(WIN)
         
+        #MENU_TEXT = get_font(75).render("AIM WORKSHOP", 1, ON_PRIMARY)
+        #WIN.blit(MENU_TEXT, (get_middle(MENU_TEXT, WIDTH), 45))
+
 
         SLIDER_TEXT = MENU_FONT.render("GROWTH RATE", True, "White")
-        SLIDER_TEXT_RECT = SLIDER_TEXT.get_rect(center=(WIDTH / 2, 340))
-        WIN.blit(SLIDER_TEXT, SLIDER_TEXT_RECT)
+        WIN.blit(SLIDER_TEXT, (get_middle(SLIDER_TEXT, WIDTH), 350))
+
         for slider in sliders:
             if slider.container_rect.collidepoint(OPTIONS_SCREEN_MOUSE_POS) and pygame.mouse.get_pressed()[0]:
                 slider.move_slider(OPTIONS_SCREEN_MOUSE_POS)
