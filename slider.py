@@ -1,7 +1,7 @@
 import pygame
 from utils import get_font
 class Slider:
-    def __init__(self, pos: tuple, size: tuple, initial_val: float, min: int, max: int):
+    def __init__(self, pos: tuple, size: tuple, initial_val: float, min: int, max: int, base_color, hovering_color):
         self.pos = pos
         self.size = size
         self.circle_radius = self.size[1] * .6
@@ -20,8 +20,8 @@ class Slider:
         self.value = .6
 
         self.hovered = False
-        self.base_color = "white"
-        self.hovering_color = "green"
+        self.base_color = base_color
+        self.hovering_color = hovering_color
         self.border_radius = 30
 
 

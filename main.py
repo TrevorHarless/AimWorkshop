@@ -14,9 +14,6 @@ WIDTH, HEIGHT = 1280, 720
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Aim Workshop")
 
-# Color of the background
-BG_COLOR = (0, 25, 40)
-
 # RGB Values for Colors
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -35,7 +32,7 @@ ON_SECONDARY = "#000000"
 options = UserOptions()
 
 sliders = [
-    Slider((WIDTH / 2, 440), (100, 30), .5, 0.1, 1.2)
+    Slider((WIDTH / 2, 440), (100, 30), .5, 0.1, 1.2, ON_PRIMARY, ON_SECONDARY)
         ]
 
 """
@@ -52,7 +49,7 @@ def main_menu(options):
 
     
     buttons = [PLAY_BUTTON, OPTIONS_BUTTON, QUIT_BUTTON]
-    # Spacing between buttons on screen
+    # Spacing between buttons on main menu screen
     spacing = 35 
 
     center_vertically(buttons, spacing, 0, WIDTH, HEIGHT)
@@ -71,12 +68,13 @@ def main_menu(options):
                     quit()
         
         MENU_MOUSE_POS = pygame.mouse.get_pos()
-        MENU_TEXT = get_font(75).render("AIM WORKSHOP", 1, ON_PRIMARY)
-        WIN.blit(MENU_TEXT, (get_middle(MENU_TEXT, WIDTH), 45))
 
-        for button in [PLAY_BUTTON, OPTIONS_BUTTON, QUIT_BUTTON]:
+        for button in buttons:
             button.changeColor(MENU_MOUSE_POS)
             button.update(WIN)
+
+        MENU_TEXT = get_font(75).render("AIM WORKSHOP", 1, ON_PRIMARY)
+        WIN.blit(MENU_TEXT, (get_middle(MENU_TEXT, WIDTH), 45))
     
         pygame.display.update()
 
@@ -94,19 +92,19 @@ def play(options):
         WIN.blit(PLAY_TEXT, PLAY_RECT)
 
         PLAY_RADIATING_CIRCLES = Button(pos=(0, 0), 
-                            text_input="RADIATING CIRCLES", font=get_font(35), base_color="White", hovering_color="Green")
+                            text_input="RADIATING CIRCLES", font=get_font(35), base_color=ON_PRIMARY, hovering_color=ON_SECONDARY)
         PLAY_GRAVITY = Button(pos=(0, 0), 
-                            text_input="GRAVITY", font=get_font(35), base_color="White", hovering_color="Green")
+                            text_input="GRAVITY", font=get_font(35), base_color=ON_PRIMARY, hovering_color=ON_SECONDARY)
         PLAY_NO_GRAVITY = Button(pos=(0, 0), 
-                            text_input="NO GRAVITY", font=get_font(35), base_color="White", hovering_color="Green")
+                            text_input="NO GRAVITY", font=get_font(35), base_color=ON_PRIMARY, hovering_color=ON_SECONDARY)
         PLAY_BACK = Button(pos=(0, 0), 
-                            text_input="BACK", font=get_font(35), base_color="White", hovering_color="Green")
+                            text_input="BACK", font=get_font(35), base_color=ON_PRIMARY, hovering_color=ON_SECONDARY)
         
         buttons = [
             PLAY_RADIATING_CIRCLES, PLAY_GRAVITY, PLAY_NO_GRAVITY, PLAY_BACK
         ]
 
-        # Spacing between buttons on screen
+        # Spacing between buttons on play screen
         spacing = 35
 
         center_vertically(buttons, spacing, 0, WIDTH, HEIGHT)
@@ -198,24 +196,24 @@ def options_screen(options, sliders):
         mock_draw(WIN, mock_target, options)
 
         FIRST_TARGET_COLOR_BUTTON = Button(pos=(0, 0), 
-            text_input="FIRST TARGET COLOR", font=MENU_FONT, base_color="White", hovering_color="Green")
+            text_input="FIRST TARGET COLOR", font=MENU_FONT, base_color=ON_PRIMARY, hovering_color=ON_SECONDARY)
         SECOND_TARGET_COLOR_BUTTON = Button(pos=(0, 0), 
-            text_input="SECOND TARGET COLOR", font=MENU_FONT, base_color="White", hovering_color="Green")
+            text_input="SECOND TARGET COLOR", font=MENU_FONT, base_color=ON_PRIMARY, hovering_color=ON_SECONDARY)
         BACKGROUND_BUTTON = Button(pos=(0, 0), 
-            text_input="BACKGROUND", font=MENU_FONT, base_color="White", hovering_color="Green")
+            text_input="BACKGROUND", font=MENU_FONT, base_color=ON_PRIMARY, hovering_color=ON_SECONDARY)
         
         buttons = [
             FIRST_TARGET_COLOR_BUTTON, SECOND_TARGET_COLOR_BUTTON, 
             BACKGROUND_BUTTON
         ]
 
-        # Spacing between buttons on screen
+        # Spacing between buttons on options screen
         spacing = 25
 
         center_vertically(buttons, spacing, -150, WIDTH, HEIGHT)
 
         OPTIONS_SCREEN_BACK = Button(pos=(0, 0), 
-            text_input="BACK", font=MENU_FONT, base_color="White", hovering_color="Green")
+            text_input="BACK", font=MENU_FONT, base_color=ON_PRIMARY, hovering_color=ON_SECONDARY)
 
 
         center_x(OPTIONS_SCREEN_BACK, WIDTH)
