@@ -12,7 +12,6 @@ Built using pygame, Aim Workshop
 
 * Python
 * pygame
-* pymunk
 
 ### Executing program
 

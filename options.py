@@ -3,7 +3,7 @@ class UserOptions:
         self.target_colors = ["red", "blue", "green", "yellow", "purple", "white"]
         self.first_target_color_index = 0
         self.second_target_color_index = 5
-        self.bg_colors = [ "#213972", "#a69cbc", "#2e5c7f", "#72071c", "#679683", "#4f6a05", "#453430", "#b8b3e9", "#b25c1f", "#e5f0bb", "#c6b9b7", "#d44d51"]
+        self.bg_colors = ["#212026", "#213972", "#a69cbc", "#2e5c7f", "#72071c", "#679683", "#4f6a05", "#453430", "#b8b3e9", "#b25c1f", "#e5f0bb", "#c6b9b7", "#d44d51"]
         self.bg_color_index = 0
         self.growth_rate = .6
  

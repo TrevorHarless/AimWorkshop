@@ -3,7 +3,7 @@ import time
 import random
 from target import Target
 from utils import draw, draw_nav_bar, NAV_BAR_HEIGHT, show_explanation_screen
-import main as main
+
 
 # Target event
 TARGET_EVENT = pygame.USEREVENT
@@ -143,7 +143,6 @@ def no_gravity_mode(WIN, HEIGHT, WIDTH, options):
         draw(WIN, targets, options)
         draw_nav_bar(WIN, elapsed_time, targets_clicked, misses, WIDTH, LIVES)
         pygame.display.update()
-
 
 def gravity_mode(WIN, HEIGHT, WIDTH, options):
     # Explanation screen before the game starts
