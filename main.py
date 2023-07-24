@@ -1,7 +1,7 @@
 import pygame
 from button import Button
 from utils import mock_draw, format_time, get_middle, get_font, center_vertically, center_x
-from game_logic import radiating_targets
+from game_logic import radiating_targets, no_gravity_mode, gravity_mode
 from options import UserOptions
 from target import Target
 from slider import Slider
@@ -126,10 +126,10 @@ def play(options):
                     main_menu(options)
                 if PLAY_RADIATING_CIRCLES.checkForInput(PLAY_MOUSE_POS):
                     radiating_targets(WIN, HEIGHT, WIDTH, options)
-                if PLAY_NO_GRAVITY.checkForInput(PLAY_MOUSE_POS):
-                    pass
                 if PLAY_GRAVITY.checkForInput(PLAY_MOUSE_POS):
-                    pass
+                    gravity_mode(WIN, HEIGHT, WIDTH, options)
+                if PLAY_NO_GRAVITY.checkForInput(PLAY_MOUSE_POS):
+                    no_gravity_mode(WIN, HEIGHT, WIDTH, options)
 
         pygame.display.update()
 
@@ -183,6 +183,10 @@ def end_screen(elapsed_time, targets_clicked, clicks, options):
 
         pygame.display.update()
 
+"""
+Options screen which includes changing the color of the target, changing the background color,
+and changing the growth rate of the targets. 
+"""
 def options_screen(options, sliders):
     while True:
         WIN.fill(options.get_bg_color())
@@ -255,7 +259,6 @@ def options_screen(options, sliders):
                 if BACKGROUND_BUTTON.checkForInput(OPTIONS_SCREEN_MOUSE_POS):
                     options.cycle_bg_image()
         pygame.display.update()
-
 
 if __name__ == "__main__":
     main_menu(options)

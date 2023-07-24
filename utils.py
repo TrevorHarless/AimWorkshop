@@ -31,6 +31,29 @@ def format_time(secs):
     else:
         return f"0.{milli}"
 
+def show_explanation_screen(win, options, width, height, explanation_text):
+    font = pygame.font.Font(None, 30)
+    text = font.render(explanation_text, True, (255, 255, 255))
+    text_rect = text.get_rect(center=(width // 2, height // 2))
+
+    start_time = pygame.time.get_ticks()
+    duration = 8000  # 8 seconds 
+    run = True
+    while run and pygame.time.get_ticks() - start_time < duration:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN or event.key == pygame.K_KP_ENTER:
+                    run = False
+
+        win.fill(options.get_bg_color())
+        win.blit(text, text_rect)
+        pygame.display.update()
+
+
+
 # Easily position text or rectangles in the middle of the screen
 def get_middle(surface, width):
     return width / 2 - surface.get_width() / 2  
