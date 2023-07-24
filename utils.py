@@ -67,10 +67,10 @@ def draw_nav_bar(win, elapsed_time, targets_clicked, misses, width, lives):
 
     speed = round(targets_clicked / elapsed_time, 1)
     
-    time_label = LABEL_FONT.render(f"{format_time(elapsed_time)}", 1, "#212026")
-    speed_label = LABEL_FONT.render(f"Speed: {speed} t/s", 1, "#212026")
-    hits_label = LABEL_FONT.render(f"Hits: {targets_clicked}", 1, "#212026")
-    lives_label = LABEL_FONT.render(f"Lives: {lives - misses}", 1, "#212026")
+    time_label = get_font(20).render(f"{format_time(elapsed_time)}", 1, "#212026")
+    speed_label = get_font(20).render(f"Speed: {speed} t/s", 1, "#212026")
+    hits_label = get_font(20).render(f"Hits: {targets_clicked}", 1, "#212026")
+    lives_label = get_font(20).render(f"Lives: {lives - misses}", 1, "#212026")
 
     win.blit(time_label, (container_rect.left + 25, container_rect.centery - time_label.get_height() // 2))
     win.blit(speed_label, (container_rect.left + 150, container_rect.centery - speed_label.get_height() // 2))

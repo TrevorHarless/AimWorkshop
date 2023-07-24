@@ -3,6 +3,7 @@ import time
 import random
 from target import Target
 from utils import draw, draw_nav_bar, NAV_BAR_HEIGHT, show_explanation_screen
+import main as main
 
 
 # Target event
