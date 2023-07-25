@@ -1,7 +1,7 @@
 import pygame
 from button import Button
 from utils import mock_draw, format_time, get_middle, get_font, center_vertically, center_x
-from game_logic import radiating_targets, no_gravity_mode, gravity_mode
+from game_logic import radiating_targets, no_gravity_mode, gravity_mode, static_mode
 from options import UserOptions
 from target import Target
 from slider import Slider
@@ -27,9 +27,15 @@ ON_SECONDARY = "#A4CFC9"
 
 options = UserOptions()
 
-sliders = [
-    Slider((WIDTH / 2, 460), (100, 30), .5, 0.1, 1.2, PRIMARY_COLOR, ON_SECONDARY)
-        ]
+growth_rate_slider = Slider((WIDTH / 2, 460), (100, 30), .5, 0.1, 1.2, PRIMARY_COLOR, ON_SECONDARY)
+
+spawn_rate_slider = Slider((WIDTH / 2, 585), (100, 30), .5, 400, 2000, PRIMARY_COLOR, ON_SECONDARY)
+
+
+# sliders = [
+#     Slider((WIDTH / 2, 460), (100, 30), .5, 0.1, 1.2, PRIMARY_COLOR, ON_SECONDARY),
+#     Slider((WIDTH / 2, 585), (100, 30), .5, 400, 2000, PRIMARY_COLOR, ON_SECONDARY)
+#         ]
 
 """
 Creates the main menu for the game. 
@@ -61,7 +67,7 @@ def main_menu(options):
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
                     play(options)
                 if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
-                    options_screen(options, sliders)
+                    options_screen(options, growth_rate_slider, spawn_rate_slider)
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
                     quit()
         
@@ -91,11 +97,14 @@ def play(options):
                             text_input="GRAVITY", font=get_font(35), base_color=ON_PRIMARY, hovering_color=ON_SECONDARY, button_color=BUTTON_COLOR)
         PLAY_NO_GRAVITY = Button(pos=(0, 0), 
                             text_input="NO GRAVITY", font=get_font(35), base_color=ON_PRIMARY, hovering_color=ON_SECONDARY, button_color=BUTTON_COLOR)
+        PLAY_STATIC = Button(pos=(0, 0), 
+                            text_input="STATIC", font=get_font(35), base_color=ON_PRIMARY, hovering_color=ON_SECONDARY, button_color=BUTTON_COLOR)
+        
         PLAY_BACK = Button(pos=(0, 0), 
                             text_input="BACK", font=get_font(35), base_color=ON_PRIMARY, hovering_color=ON_SECONDARY, button_color=BUTTON_COLOR)
         
         buttons = [
-            PLAY_RADIATING_CIRCLES, PLAY_GRAVITY, PLAY_NO_GRAVITY, PLAY_BACK
+            PLAY_RADIATING_CIRCLES, PLAY_GRAVITY, PLAY_NO_GRAVITY, PLAY_STATIC, PLAY_BACK
         ]
 
         # Spacing between buttons on play screen
@@ -109,6 +118,8 @@ def play(options):
         PLAY_BACK.update(WIN)
         PLAY_NO_GRAVITY.changeColor(PLAY_MOUSE_POS)
         PLAY_NO_GRAVITY.update(WIN)
+        PLAY_STATIC.changeColor(PLAY_MOUSE_POS)
+        PLAY_STATIC.update(WIN)
         PLAY_GRAVITY.changeColor(PLAY_MOUSE_POS)
         PLAY_GRAVITY.update(WIN)
 
@@ -124,6 +135,8 @@ def play(options):
                     gravity_mode(WIN, HEIGHT, WIDTH, options)
                 if PLAY_NO_GRAVITY.checkForInput(PLAY_MOUSE_POS):
                     no_gravity_mode(WIN, HEIGHT, WIDTH, options)
+                if PLAY_STATIC.checkForInput(PLAY_MOUSE_POS):
+                    static_mode(WIN, HEIGHT, WIDTH, options)
 
         pygame.display.update()
 
@@ -181,7 +194,7 @@ def end_screen(elapsed_time, targets_clicked, clicks, options):
 Options screen which includes changing the color of the target, changing the background color,
 and changing the growth rate of the targets. 
 """
-def options_screen(options, sliders):
+def options_screen(options, growth_rate_slider, spawn_rate_slider):
     while True:
         WIN.fill(options.get_bg_color())
         
@@ -213,11 +226,9 @@ def options_screen(options, sliders):
         OPTIONS_SCREEN_BACK = Button(pos=(0, 0), 
             text_input="BACK", font=get_font(32), base_color=ON_PRIMARY, hovering_color=ON_SECONDARY, button_color=BUTTON_COLOR)
 
-
         center_x(OPTIONS_SCREEN_BACK, WIDTH)
-        OPTIONS_SCREEN_BACK.rect.y = HEIGHT * 0.85
+        OPTIONS_SCREEN_BACK.rect.y = HEIGHT * 0.9
         
-
         OPTIONS_SCREEN_BACK.changeColor(OPTIONS_SCREEN_MOUSE_POS)
         OPTIONS_SCREEN_BACK.update(WIN)
         FIRST_TARGET_COLOR_BUTTON.changeColor(OPTIONS_SCREEN_MOUSE_POS)
@@ -227,14 +238,32 @@ def options_screen(options, sliders):
         BACKGROUND_BUTTON.changeColor(OPTIONS_SCREEN_MOUSE_POS)
         BACKGROUND_BUTTON.update(WIN)
         
-        SLIDER_TEXT = get_font(32).render("GROWTH RATE", True, PRIMARY_COLOR)
-        WIN.blit(SLIDER_TEXT, (get_middle(SLIDER_TEXT, WIDTH), 370))
+        GROWTH_RATE_TEXT = get_font(32).render("GROWTH RATE", True, PRIMARY_COLOR)
+        WIN.blit(GROWTH_RATE_TEXT, (get_middle(GROWTH_RATE_TEXT, WIDTH), 370))
 
-        for slider in sliders:
-            if slider.container_rect.collidepoint(OPTIONS_SCREEN_MOUSE_POS) and pygame.mouse.get_pressed()[0]:
-                slider.move_slider(OPTIONS_SCREEN_MOUSE_POS)
-                options.set_growth_rate(slider.get_value())
-            slider.render(WIN)
+        SPAWN_RATE_TEXT = get_font(32).render("SPAWN RATE", True, PRIMARY_COLOR)
+        WIN.blit(SPAWN_RATE_TEXT, (get_middle(SPAWN_RATE_TEXT, WIDTH), 500))
+
+        growth_rate_slider.draw_value_and_text(WIN, "slowest", "slowest", PRIMARY_COLOR)
+        spawn_rate_slider.draw_value_and_text(WIN, "fastest", "slowest", PRIMARY_COLOR)
+
+        if growth_rate_slider.container_rect.collidepoint(OPTIONS_SCREEN_MOUSE_POS) and pygame.mouse.get_pressed()[0]:
+                growth_rate_slider.move_slider(OPTIONS_SCREEN_MOUSE_POS)
+                options.set_growth_rate(growth_rate_slider.get_value())
+        growth_rate_slider.render(WIN)
+
+        if spawn_rate_slider.container_rect.collidepoint(OPTIONS_SCREEN_MOUSE_POS) and pygame.mouse.get_pressed()[0]:
+                spawn_rate_slider.move_slider(OPTIONS_SCREEN_MOUSE_POS)
+                # options.set_growth_rate(spawn_rate_slider.get_value()) --> set spawn rate
+                options.set_spawn_rate(spawn_rate_slider.get_value())
+        spawn_rate_slider.render(WIN)
+        
+        
+        # for slider in sliders:
+        #     if slider.container_rect.collidepoint(OPTIONS_SCREEN_MOUSE_POS) and pygame.mouse.get_pressed()[0]:
+        #         slider.move_slider(OPTIONS_SCREEN_MOUSE_POS)
+        #         options.set_growth_rate(slider.get_value())
+        #     slider.render(WIN)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
