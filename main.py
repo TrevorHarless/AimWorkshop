@@ -28,7 +28,7 @@ ON_SECONDARY = "#A4CFC9"
 options = UserOptions()
 
 sliders = [
-    Slider((WIDTH / 2, 440), (100, 30), .5, 0.1, 1.2, PRIMARY_COLOR, ON_SECONDARY)
+    Slider((WIDTH / 2, 460), (100, 30), .5, 0.1, 1.2, PRIMARY_COLOR, ON_SECONDARY)
         ]
 
 """
@@ -42,16 +42,18 @@ def main_menu(options):
     QUIT_BUTTON =Button(pos=(0, 0),
                          text_input="QUIT", font=get_font(75), base_color=ON_PRIMARY, hovering_color=ON_SECONDARY, button_color=BUTTON_COLOR)
 
-
-    
     buttons = [PLAY_BUTTON, OPTIONS_BUTTON, QUIT_BUTTON]
     # Spacing between buttons on main menu screen
     spacing = 35 
 
     center_vertically(buttons, spacing, 0, WIDTH, HEIGHT)
 
-    WIN.fill(options.get_bg_color())
+    
     while True:
+        WIN.fill(options.get_bg_color())
+        MENU_TEXT = get_font(75).render("AIM WORKSHOP", True, PRIMARY_COLOR)
+        WIN.blit(MENU_TEXT, (get_middle(MENU_TEXT, WIDTH), 45))
+        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 quit()
@@ -64,14 +66,10 @@ def main_menu(options):
                     quit()
         
         MENU_MOUSE_POS = pygame.mouse.get_pos()
-
         for button in buttons:
             button.changeColor(MENU_MOUSE_POS)
             button.update(WIN)
 
-        MENU_TEXT = get_font(75).render("AIM WORKSHOP", 1, PRIMARY_COLOR)
-        WIN.blit(MENU_TEXT, (get_middle(MENU_TEXT, WIDTH), 45))
-    
         pygame.display.update()
 
 """
@@ -151,10 +149,10 @@ def end_screen(elapsed_time, targets_clicked, clicks, options):
         END_SCREEN_BACK.changeColor(END_SCREEN_MOUSE_POS)
         END_SCREEN_BACK.update(WIN)
 
-        time_label = get_font(24).render(f"TIME: {format_time(elapsed_time)}", 1, PRIMARY_COLOR)
+        time_label = get_font(24).render(f"TIME: {format_time(elapsed_time)} seconds", 1, PRIMARY_COLOR)
         
         speed = round(targets_clicked / elapsed_time, 1)
-        speed_label = get_font(24).render(f"SPEED: {speed} t/s", 1, PRIMARY_COLOR)
+        speed_label = get_font(24).render(f"SPEED: {speed} targets/second", 1, PRIMARY_COLOR)
         
         hits_label = get_font(24).render(f"HITS: {targets_clicked}", 1, PRIMARY_COLOR)
 
@@ -163,7 +161,7 @@ def end_screen(elapsed_time, targets_clicked, clicks, options):
         except ZeroDivisionError as e:
             accuracy = 0.0
         
-        accuracy_label = get_font(24).render(f"ACCURACY: {accuracy}", 1, PRIMARY_COLOR)
+        accuracy_label = get_font(24).render(f"ACCURACY: {accuracy}%", 1, PRIMARY_COLOR)
 
         WIN.blit(time_label, (get_middle(time_label, WIDTH), 180))
         WIN.blit(speed_label, (get_middle(speed_label, WIDTH), 280))
@@ -188,7 +186,7 @@ def options_screen(options, sliders):
         WIN.fill(options.get_bg_color())
         
         OPTIONS_SCREEN_MOUSE_POS = pygame.mouse.get_pos()
-        OPTIONS_SCREEN_TEXT = get_font(32).render("OPTIONS", True, PRIMARY_COLOR)
+        OPTIONS_SCREEN_TEXT = get_font(75).render("OPTIONS", True, PRIMARY_COLOR)
         OPTIONS_SCREEN_RECT = OPTIONS_SCREEN_TEXT.get_rect(center=(WIDTH / 2, 70))
         WIN.blit(OPTIONS_SCREEN_TEXT, OPTIONS_SCREEN_RECT)
 
@@ -210,7 +208,7 @@ def options_screen(options, sliders):
         # Spacing between buttons on options screen
         spacing = 25
 
-        center_vertically(buttons, spacing, -150, WIDTH, HEIGHT)
+        center_vertically(buttons, spacing, -120, WIDTH, HEIGHT)
 
         OPTIONS_SCREEN_BACK = Button(pos=(0, 0), 
             text_input="BACK", font=get_font(32), base_color=ON_PRIMARY, hovering_color=ON_SECONDARY, button_color=BUTTON_COLOR)
@@ -229,12 +227,8 @@ def options_screen(options, sliders):
         BACKGROUND_BUTTON.changeColor(OPTIONS_SCREEN_MOUSE_POS)
         BACKGROUND_BUTTON.update(WIN)
         
-        #MENU_TEXT = get_font(75).render("AIM WORKSHOP", 1, ON_PRIMARY)
-        #WIN.blit(MENU_TEXT, (get_middle(MENU_TEXT, WIDTH), 45))
-
-
         SLIDER_TEXT = get_font(32).render("GROWTH RATE", True, PRIMARY_COLOR)
-        WIN.blit(SLIDER_TEXT, (get_middle(SLIDER_TEXT, WIDTH), 350))
+        WIN.blit(SLIDER_TEXT, (get_middle(SLIDER_TEXT, WIDTH), 370))
 
         for slider in sliders:
             if slider.container_rect.collidepoint(OPTIONS_SCREEN_MOUSE_POS) and pygame.mouse.get_pressed()[0]:
