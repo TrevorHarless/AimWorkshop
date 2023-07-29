@@ -93,5 +93,17 @@ def center_vertically(buttons, spacing, offset_y, width, height):
 def center_x(button, width):
     button.rect.x = (width - button.rect.width) // 2
 
+# TODO - Change color to what is being used
+def render_scores(scores, x_offset, y_offset, win, label, limit=5):
+    title_text = get_font(32).render(label, True, "white")
+    win.blit(title_text, (x_offset, y_offset))
+    y_offset += 60
+
+    for i, score_tuple in enumerate(scores[:limit]):
+        text = f"{i+1}. Score: {score_tuple[1]}"
+        score_text = get_font(24).render(text, True, "white")
+        win.blit(score_text, (x_offset, y_offset))
+        y_offset += 40
+
 # Import values from main.py at the end of utils.py to avoid circular import error
 from main import LABEL_FONT

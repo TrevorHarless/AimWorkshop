@@ -3,8 +3,8 @@ import time
 import random
 from target import Target
 from utils import draw, draw_nav_bar, NAV_BAR_HEIGHT, show_explanation_screen
+from database import Database
 import main as main
-
 
 # Target event
 TARGET_EVENT = pygame.USEREVENT
@@ -19,14 +19,13 @@ FPS = 60
 
 EXPLANATION_TIME = 8
 
-def radiating_targets(WIN, HEIGHT, WIDTH, options):
+def radiating_targets(WIN, HEIGHT, WIDTH, db, options):
     # Explanation screen before the game starts
     show_explanation_screen(WIN, options, WIDTH, HEIGHT,
         "RADIATING TARGETS MODE: Targets must be shot before they disappear or lives will be lost!")
-    
+
     # How often a unique target will appear
     target_increment = options.get_spawn_rate()  
-
     run = True
     targets = []
     clock = pygame.time.Clock()
@@ -35,6 +34,9 @@ def radiating_targets(WIN, HEIGHT, WIDTH, options):
     clicks = 0
     misses = 0
     start_time = time.time()
+    score = 0
+    multiplier = 1
+    base_score = 10
 
     # Game loop
     while run:
@@ -46,6 +48,7 @@ def radiating_targets(WIN, HEIGHT, WIDTH, options):
 
         for event in pygame.event.get():
             if (event.type == pygame.QUIT):
+                #db.close_connection()
                 quit()
             
             if (event.type == TARGET_EVENT):
@@ -65,6 +68,7 @@ def radiating_targets(WIN, HEIGHT, WIDTH, options):
             # If target is not clicked (size goes to 0), target is removed from list
             if (target.size <= 0):
                 targets.remove(target)
+                multiplier = 1
                 misses += 1
             
             # If the user has clicked their mouse and collided with a target,
@@ -72,32 +76,39 @@ def radiating_targets(WIN, HEIGHT, WIDTH, options):
             if click and target.collide(mouse_pos[0], mouse_pos[1]):
                 targets.remove(target)
                 targets_clicked += 1
+                score += multiplier * base_score
+                multiplier += 1
 
         # Ends game if misses exceeds number of lives
         if misses >= LIVES:
-            main.end_screen(elapsed_time, targets_clicked, clicks, options)
+            db.insert_score('radiating', score)
+            main.end_screen(elapsed_time, targets_clicked, clicks, score, options, db)
+            #db.close_connection()
 
         # Draws the targets
         draw(WIN, targets, options)
         draw_nav_bar(WIN, elapsed_time, targets_clicked, misses, WIDTH, LIVES)
         pygame.display.update()
 
-def no_gravity_mode(WIN, HEIGHT, WIDTH, options):
+def no_gravity_mode(WIN, HEIGHT, WIDTH, db, options):
     # Explanation screen before the game starts
     show_explanation_screen(WIN, options, WIDTH, HEIGHT, 
         "NO GRAVITY MODE: Targets are NOT affected by gravity. Lives are lost if a target is alive for longer than 6 seconds!")
 
-    target_increment = 1400
+    target_increment = options.get_spawn_rate() 
     # Amount of seconds the target can be on the screen before a life is taken
     max_target_time = 6
     run = True
     targets = []
     clock = pygame.time.Clock()
-    pygame.time.set_timer(TARGET_EVENT, target_increment)
+    pygame.time.set_timer(TARGET_EVENT, int(target_increment))
     targets_clicked = 0
     clicks = 0
     misses = 0
     start_time = time.time()
+    score = 0
+    multiplier = 1
+    base_score = 10
 
     # Game loop
     while run:
@@ -128,40 +139,47 @@ def no_gravity_mode(WIN, HEIGHT, WIDTH, options):
             elapsed_time_since_spawn = time.time() - target.spawn_time
             if elapsed_time_since_spawn > max_target_time:
                 targets.remove(target)
+                multiplier = 1
                 misses += 1
 
             # If the user has clicked their mouse and collided with a target,
             # remove the target and increment targets clicked
             if click and target.collide(mouse_pos[0], mouse_pos[1]):
                 targets.remove(target)
+                score += multiplier * base_score
+                multiplier += 1
                 targets_clicked += 1
 
         # Ends game if misses exceed the number of lives
         if misses >= LIVES:
-            main.end_screen(elapsed_time, targets_clicked, clicks, options)
+            db.insert_score('no_gravity', score)
+            main.end_screen(elapsed_time, targets_clicked, clicks, score, options, db)
 
         # Draws the targets
         draw(WIN, targets, options)
         draw_nav_bar(WIN, elapsed_time, targets_clicked, misses, WIDTH, LIVES)
         pygame.display.update()
 
-def gravity_mode(WIN, HEIGHT, WIDTH, options):
+def gravity_mode(WIN, HEIGHT, WIDTH, db, options):
     # Explanation screen before the game starts
     show_explanation_screen(WIN, options, WIDTH, HEIGHT, 
         "GRAVITY MODE: Targets ARE affected by gravity. Lives are lost if a target is alive for longer than 6 seconds!")
-
+    
     gravity_constant = 0.2
-    target_increment = 1400
+    target_increment = options.get_spawn_rate() 
     # Amount of seconds the target can be on the screen before a life is taken
     max_target_time = 6
     run = True
     targets = []
     clock = pygame.time.Clock()
-    pygame.time.set_timer(TARGET_EVENT, target_increment)
+    pygame.time.set_timer(TARGET_EVENT, int(target_increment))
     targets_clicked = 0
     clicks = 0
     misses = 0
     start_time = time.time()
+    score = 0
+    multiplier = 1
+    base_score = 10
 
     # Game loop
     while run:
@@ -192,39 +210,46 @@ def gravity_mode(WIN, HEIGHT, WIDTH, options):
             elapsed_time_since_spawn = time.time() - target.spawn_time
             if elapsed_time_since_spawn > max_target_time:
                 targets.remove(target)
+                multiplier = 1
                 misses += 1
 
             # If the user has clicked their mouse and collided with a target,
             # remove the target and increment targets clicked
             if click and target.collide(mouse_pos[0], mouse_pos[1]):
                 targets.remove(target)
+                score += multiplier * base_score
+                multiplier += 1
                 targets_clicked += 1
 
         # Ends game if misses exceed the number of lives
         if misses >= LIVES:
-            main.end_screen(elapsed_time, targets_clicked, clicks, options)
+            db.insert_score('gravity', score)
+            main.end_screen(elapsed_time, targets_clicked, clicks, score, options, db)
 
         # Draws the targets
         draw(WIN, targets, options)
         draw_nav_bar(WIN, elapsed_time, targets_clicked, misses, WIDTH, LIVES)
         pygame.display.update()
 
-def static_mode(WIN, HEIGHT, WIDTH, options):
+def static_mode(WIN, HEIGHT, WIDTH, db, options):
     # Explanation screen before the game starts
     show_explanation_screen(WIN, options, WIDTH, HEIGHT, 
         "STATIC MODE: Lives are lost if a target is alive for longer than 6 seconds!")
-
-    target_increment = 1400
+    
+    target_increment = options.get_spawn_rate() 
     # Amount of seconds the target can be on the screen before a life is taken
     max_target_time = 6
     run = True
     targets = []
     clock = pygame.time.Clock()
-    pygame.time.set_timer(TARGET_EVENT, target_increment)
+    pygame.time.set_timer(TARGET_EVENT, int(target_increment))
     targets_clicked = 0
     clicks = 0
     misses = 0
     start_time = time.time()
+    score = 0
+    multiplier = 1
+    base_score = 10
 
     # Game loop
     while run:
@@ -255,23 +280,25 @@ def static_mode(WIN, HEIGHT, WIDTH, options):
             elapsed_time_since_spawn = time.time() - target.spawn_time
             if elapsed_time_since_spawn > max_target_time:
                 targets.remove(target)
+                multiplier = 1
                 misses += 1
 
             # If the user has clicked their mouse and collided with a target,
             # remove the target and increment targets clicked
             if click and target.collide(mouse_pos[0], mouse_pos[1]):
                 targets.remove(target)
+                score += multiplier * base_score
+                multiplier += 1
                 targets_clicked += 1
 
         # Ends game if misses exceed the number of lives
         if misses >= LIVES:
-            main.end_screen(elapsed_time, targets_clicked, clicks, options)
+            db.insert_score('static', score)
+            main.end_screen(elapsed_time, targets_clicked, clicks, score, options, db)
 
         # Draws the targets
         draw(WIN, targets, options)
         draw_nav_bar(WIN, elapsed_time, targets_clicked, misses, WIDTH, LIVES)
         pygame.display.update()
 
-
-            
             
