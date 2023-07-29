@@ -5,7 +5,6 @@ from game_logic import radiating_targets, no_gravity_mode, gravity_mode, static_
 from options import UserOptions
 from target import Target
 from slider import Slider
-import sqlite3
 from database import Database
 pygame.init()
 
@@ -22,19 +21,16 @@ LABEL_FONT = pygame.font.SysFont("assets/fonts/Inter-Regular", 24)
 BUTTON_COLOR = "#F8F9F8"
 PRIMARY_COLOR = "#F8F9F8"
 PRIMARY_VAR = "#3700B3"
-#SECONDARY_COLOR = "#03DAC6"
 SECONDARY_VAR = "#018786"
 ON_PRIMARY = "#212026"
 ON_SECONDARY = "#A4CFC9"
 
-options = UserOptions()
-
+# Sliders for Options Screen
 growth_rate_slider = Slider((WIDTH / 2, 460), (100, 30), .5, 0.1, 1.2, PRIMARY_COLOR, ON_SECONDARY)
-
 spawn_rate_slider = Slider((WIDTH / 2, 585), (100, 30), .5, 400, 2000, PRIMARY_COLOR, ON_SECONDARY)
 
 """
-Creates the main menu for the game. 
+Creates the main menu for the game. Includes the Play, Options, Stats, and Quit buttons. 
 """
 def main_menu(options, db):
     PLAY_BUTTON = Button(pos=(0, 0),
@@ -79,7 +75,8 @@ def main_menu(options, db):
         pygame.display.update()
 
 """
-Contains the main game loop and logic
+Play screen. Includes all of the game modes that the user can play as well as a back button
+that routes to the main menu. 
 """
 def play(options, db):
     while True:
@@ -141,9 +138,10 @@ def play(options, db):
         pygame.display.update()
 
 """
-Creates the end screen for the game when the user runs out of lives. 
+Creates the end screen for the game when the user runs out of lives. Displays different
+stats for the user to see how they did on that round. 
 """
-def end_screen(elapsed_time, targets_clicked, clicks, score, options, db):
+def end_screen(elapsed_time, targets_clicked, clicks, score, options, db, current_game):
     while True:
         END_SCREEN_MOUSE_POS = pygame.mouse.get_pos()
         
@@ -155,12 +153,20 @@ def end_screen(elapsed_time, targets_clicked, clicks, score, options, db):
         
         END_SCREEN_BACK = Button(pos=(0, 0), 
             text_input="BACK", font=get_font(32), base_color=ON_PRIMARY, hovering_color=ON_SECONDARY, button_color=BUTTON_COLOR)
+        RESTART_BUTTON = Button(pos=(0, 0), 
+            text_input="RESTART", font=get_font(32), base_color=ON_PRIMARY, hovering_color=ON_SECONDARY, button_color=BUTTON_COLOR)
 
-        center_x(END_SCREEN_BACK, WIDTH)
-        END_SCREEN_BACK.rect.y = HEIGHT * 0.85
+        buttons = [RESTART_BUTTON, END_SCREEN_BACK]
+
+        # Spacing between buttons on play screen
+        spacing = 35
+
+        center_vertically(buttons, spacing, 150, WIDTH, HEIGHT)
         
         END_SCREEN_BACK.changeColor(END_SCREEN_MOUSE_POS)
         END_SCREEN_BACK.update(WIN)
+        RESTART_BUTTON.changeColor(END_SCREEN_MOUSE_POS)
+        RESTART_BUTTON.update(WIN)
 
         time_label = get_font(24).render(f"TIME: {format_time(elapsed_time)} seconds", 1, PRIMARY_COLOR)
         
@@ -183,13 +189,22 @@ def end_screen(elapsed_time, targets_clicked, clicks, score, options, db):
         WIN.blit(speed_label, (get_middle(speed_label, WIDTH), 280))
         WIN.blit(hits_label, (get_middle(hits_label, WIDTH), 330))
         WIN.blit(accuracy_label, (get_middle(accuracy_label, WIDTH), 380))
-        
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 quit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if END_SCREEN_BACK.checkForInput(END_SCREEN_MOUSE_POS):
                     main_menu(options, db)
+                if RESTART_BUTTON.checkForInput(END_SCREEN_MOUSE_POS):
+                    if current_game == 1:
+                        radiating_targets(WIN, HEIGHT, WIDTH, db, options)
+                    elif current_game == 2:
+                        no_gravity_mode(WIN, HEIGHT, WIDTH, db, options)
+                    elif current_game == 3:
+                        gravity_mode(WIN, HEIGHT, WIDTH, db, options)
+                    elif current_game == 4:
+                        static_mode(WIN, HEIGHT, WIDTH, db, options)
 
         pygame.display.update()
 
@@ -322,8 +337,9 @@ def stats_screen(options, db):
         pygame.display.update()
 
 if __name__ == "__main__":
-    db = Database()
-
-    main_menu(options, db)
-
-    db.close_connection()
+    try: 
+        db = Database()
+        options = UserOptions()
+        main_menu(options, db)
+    finally:
+        db.close_connection()

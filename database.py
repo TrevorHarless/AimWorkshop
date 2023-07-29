@@ -8,14 +8,15 @@ class Database:
         if cls._instance is None:
             cls._instance = super(Database, cls).__new__(cls)
             cls._instance.conn = sqlite3.connect('data/Scores.db')
-            # if game_mode is not None:
-            #     cls._instance.create_table(game_mode)
+            
+            # Creates tables for each of the four game modes
             cls._instance.create_table('radiating')
             cls._instance.create_table('gravity')
             cls._instance.create_table('no_gravity')
             cls._instance.create_table('static')
         return cls._instance
     
+    # Creates a table for a specific game mode, each table includes an id and a score
     def create_table(self, game_mode):
         try:
             cur = self._instance.conn.cursor()
@@ -30,6 +31,7 @@ class Database:
         except sqlite3.Error as e:
             print("Error creating table:", e)
 
+    # Inserts a score into a given table
     def insert_score(self, game_mode, score):
         try:
             cur = self._instance.conn.cursor()
@@ -39,6 +41,8 @@ class Database:
         except sqlite3.Error as e:
             print("Error inserting score:", e)
 
+    # Checks if a table exists. Helpful to avoid errors where application attempts to
+    # modify a table that does not exist
     def table_exists(self, table_name):
         try:
             cur = self.conn.cursor()
@@ -48,6 +52,7 @@ class Database:
             print("Error checking if table exists:", e)
             return False
     
+    # Get scores from the radiating_scores table
     def get_radiating_scores(self):
         try:
             table_name = 'radiating_scores'
@@ -61,6 +66,7 @@ class Database:
             print("Error fetching scores:", e)
             return []
 
+    # Get scores from the gravity_scores table
     def get_gravity_scores(self):
         try:
             table_name = 'gravity_scores'
@@ -73,7 +79,7 @@ class Database:
         except sqlite3.Error as e:
             print("Error fetching scores:", e)
             return []
-
+    # Get scores from the no_gravity_scores table
     def get_no_gravity_scores(self):
         try:
             table_name = 'no_gravity_scores'
@@ -87,6 +93,7 @@ class Database:
             print("Error fetching scores:", e)
             return []
 
+    # Get scores from the static_scores table
     def get_static_scores(self):
         try:
             table_name = 'static_scores'
@@ -100,6 +107,7 @@ class Database:
             print("Error fetching scores:", e)
             return []
 
+    # Closes the current database instance connection
     def close_connection(self):
         print("Database closed")
         self._instance.conn.close()

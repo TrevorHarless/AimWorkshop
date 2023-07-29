@@ -32,10 +32,11 @@ def format_time(secs):
         return f"0.{milli}"
 
 def show_explanation_screen(win, options, width, height, explanation_text):
-    font = pygame.font.Font(None, 30)
-    text = font.render(explanation_text, True, (255, 255, 255))
-    text_rect = text.get_rect(center=(width // 2, height // 2))
-
+    font = pygame.font.Font("assets/fonts/Inter-Regular.ttf", 22)
+    text = font.render(explanation_text, True, "white")
+    text_rect = text.get_rect(center=(width // 2, height // 2 - 80))
+    note_text = font.render("Press SPACE to continue", True, "white")
+    note_rect = note_text.get_rect(center=(width // 2, height // 2 + 80))
     start_time = pygame.time.get_ticks()
     duration = 8000  # 8 seconds 
     run = True
@@ -45,11 +46,12 @@ def show_explanation_screen(win, options, width, height, explanation_text):
                 pygame.quit()
                 quit()
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE or event.key == pygame.K_RETURN or event.key == pygame.K_KP_ENTER:
+                if event.key == pygame.K_SPACE:
                     run = False
 
         win.fill(options.get_bg_color())
         win.blit(text, text_rect)
+        win.blit(note_text, note_rect)
         pygame.display.update()
 
 

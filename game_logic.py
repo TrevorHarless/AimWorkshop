@@ -3,7 +3,6 @@ import time
 import random
 from target import Target
 from utils import draw, draw_nav_bar, NAV_BAR_HEIGHT, show_explanation_screen
-from database import Database
 import main as main
 
 # Target event
@@ -37,6 +36,9 @@ def radiating_targets(WIN, HEIGHT, WIDTH, db, options):
     score = 0
     multiplier = 1
     base_score = 10
+
+    # Current game (1 - radiating_targets, 2 - no gravity, 3 - gravity, 4 - static)
+    current_game = 1
 
     # Game loop
     while run:
@@ -82,7 +84,7 @@ def radiating_targets(WIN, HEIGHT, WIDTH, db, options):
         # Ends game if misses exceeds number of lives
         if misses >= LIVES:
             db.insert_score('radiating', score)
-            main.end_screen(elapsed_time, targets_clicked, clicks, score, options, db)
+            main.end_screen(elapsed_time, targets_clicked, clicks, score, options, db, current_game)
             #db.close_connection()
 
         # Draws the targets
@@ -109,6 +111,8 @@ def no_gravity_mode(WIN, HEIGHT, WIDTH, db, options):
     score = 0
     multiplier = 1
     base_score = 10
+
+    current_game = 2
 
     # Game loop
     while run:
@@ -153,7 +157,7 @@ def no_gravity_mode(WIN, HEIGHT, WIDTH, db, options):
         # Ends game if misses exceed the number of lives
         if misses >= LIVES:
             db.insert_score('no_gravity', score)
-            main.end_screen(elapsed_time, targets_clicked, clicks, score, options, db)
+            main.end_screen(elapsed_time, targets_clicked, clicks, score, options, db, current_game)
 
         # Draws the targets
         draw(WIN, targets, options)
@@ -180,6 +184,8 @@ def gravity_mode(WIN, HEIGHT, WIDTH, db, options):
     score = 0
     multiplier = 1
     base_score = 10
+
+    current_game = 3
 
     # Game loop
     while run:
@@ -224,7 +230,7 @@ def gravity_mode(WIN, HEIGHT, WIDTH, db, options):
         # Ends game if misses exceed the number of lives
         if misses >= LIVES:
             db.insert_score('gravity', score)
-            main.end_screen(elapsed_time, targets_clicked, clicks, score, options, db)
+            main.end_screen(elapsed_time, targets_clicked, clicks, score, options, db, current_game)
 
         # Draws the targets
         draw(WIN, targets, options)
@@ -250,6 +256,8 @@ def static_mode(WIN, HEIGHT, WIDTH, db, options):
     score = 0
     multiplier = 1
     base_score = 10
+
+    current_game = 4
 
     # Game loop
     while run:
@@ -294,7 +302,7 @@ def static_mode(WIN, HEIGHT, WIDTH, db, options):
         # Ends game if misses exceed the number of lives
         if misses >= LIVES:
             db.insert_score('static', score)
-            main.end_screen(elapsed_time, targets_clicked, clicks, score, options, db)
+            main.end_screen(elapsed_time, targets_clicked, clicks, score, options, db, current_game)
 
         # Draws the targets
         draw(WIN, targets, options)
