@@ -12,6 +12,7 @@ Built using pygame, Aim Workshop
 
 * Python
 * pygame
+* SQLite
 
 ### Executing program
 
@@ -24,4 +25,5 @@ python3 main.py
 [Trevor Harless](https://www.linkedin.com/in/trevorharless/)
 
 ## Acknowledgments
-* [Tech With Tim](https://www.youtube.com/channel/UC4JX40jDee_tINbkjycV4Sg) - initial idea for the game
+* [Tech With Tim on YouTube](https://www.youtube.com/channel/UC4JX40jDee_tINbkjycV4Sg) - initial idea for the game
+* [Socratica on YouTube] (https://www.youtube.com/watch?v=c8yHTlrs9EA&t=540s) - extremely helpful video that got me started with SQLite
