@@ -4,10 +4,16 @@ Aim Workshop is a game where you shoot targets and strive to achieve the highest
 
 ## Description
 
-Built on the foundations of pygame, Aim Workshop is a fully functional and user friendly mini-game.
-The application includes several options to make the experience tailored to the users preference. 
+Built on the foundations of pygame, Aim Workshop is a fully functional and user-friendly mini-game.
+The application includes several options to tailor the experience to the user's preference. 
 Furthermore, the application includes a fully functional database using SQLite where the user
 is able to see their past scores for each of the four game modes. 
+
+Aim Workshop also includes modular classes for the sliders, buttons, and targets which can be used
+in other pygame applications. These classes are fully modifiable for your liking. 
+
+## Demo Video
+[Aim Workshop Demo Video](https://youtu.be/OeehY1VkiME)
 
 ## Getting Started
 
