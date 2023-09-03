@@ -1,5 +1,8 @@
 import pygame
 from utils import get_font
+"""
+Class for the Sliders in the options screen. Allow for the user to smoothly change settings.
+"""
 class Slider:
     def __init__(self, pos: tuple, size: tuple, initial_val: float, min: int, max: int, base_color, hovering_color):
         self.pos = pos
@@ -38,19 +41,6 @@ class Slider:
         else:
             pygame.draw.circle(win, "black", self.button_rect.center, self.circle_radius)
             pygame.draw.circle(win, self.base_color, self.button_rect.center, self.circle_radius * .9)
-
-        # # Display slider value near the button
-        # value_text = get_font(20).render(f"{self.get_value():.2f}", True, "white")
-        # value_rect = value_text.get_rect(center=(self.button_rect.centerx, self.button_rect.centery - 30))
-        # win.blit(value_text, value_rect)
-
-        # # Draw labels for min and max values
-        # slowest_label_text = get_font(20).render("slowest", True, "white")
-        # fastest_label_text = get_font(20).render("fastest", True, "white")
-        # slowest_label_rect = slowest_label_text.get_rect(midtop=(self.slider_left_pos - (self.slider_left_pos * .1), self.slider_top_pos))
-        # fastest_label_rect = fastest_label_text.get_rect(midtop=(self.slider_right_pos + (self.slider_right_pos * .08), self.slider_top_pos))
-        # win.blit(slowest_label_text, slowest_label_rect)
-        # win.blit(fastest_label_text, fastest_label_rect)
 
 
     def move_slider(self, mouse_pos):

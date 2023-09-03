@@ -111,6 +111,24 @@ class Database:
     def close_connection(self):
         print("Database closed")
         self._instance.conn.close()
+    
+    # Clears the database table
+    def clear_table(self, table_name):
+        try:
+            cur = self._instance.conn.cursor()
+
+            # SQL command to delete all rows from the table
+            delete_query = f"DELETE FROM {table_name}"
+
+            # Execute the delete query
+            cur.execute(delete_query)
+
+            # Commit the changes and close the connection
+            self._instance.conn.commit()
+            cur.close()
+            print(f"Data in table {table_name} has been cleared.")
+        except sqlite3.Error as error:
+            print(f"Error clearing data: {error}")
 
     # If accidentally created a table that is not being used, call this function after any instance of Database is created
     def drop_table(self, table_name):

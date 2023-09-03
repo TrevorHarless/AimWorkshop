@@ -86,7 +86,7 @@ def get_font(size):
 def center_vertically(buttons, spacing, offset_y, width, height):
     total_height = sum(button.rect.height for button in buttons)
     total_spacing = (len(buttons) - 1) * spacing
-    start_y = (height - (total_height + total_spacing)) // 2
+    start_y = (height - (total_height + total_spacing)) // 2  
 
     for button in buttons:
         button.rect.center = (width / 2, start_y + button.rect.height // 2 + offset_y)
